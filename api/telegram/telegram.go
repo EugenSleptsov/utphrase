@@ -9,7 +9,7 @@ import (
 )
 
 type Bot struct {
-	api      *tgbotapi.BotAPI
+	Api      *tgbotapi.BotAPI
 	Username string
 }
 
@@ -46,11 +46,11 @@ func NewBot(token string) (*Bot, error) {
 	}
 
 	bot := &Bot{
-		api:      api,
+		Api:      api,
 		Username: api.Self.UserName,
 	}
 
-	log.Printf("Authorized on account %s", bot.api.Self.UserName)
+	log.Printf("Authorized on account %s", bot.Api.Self.UserName)
 	return bot, nil
 }
 
@@ -60,17 +60,17 @@ func (botInstance *Bot) SetCommandList(commands ...Command) error {
 		tgCommands = append(tgCommands, tgbotapi.BotCommand{Command: string(command), Description: CommandDescriptions[command]})
 	}
 
-	_, err := botInstance.api.Request(tgbotapi.NewSetMyCommands(tgCommands...))
+	_, err := botInstance.Api.Request(tgbotapi.NewSetMyCommands(tgCommands...))
 	return err
 }
 
 func (botInstance *Bot) GetUpdateChannel(timeout int) UpdatesChannel {
-	botInstance.api.Debug = false
+	botInstance.Api.Debug = false
 
 	updateConfig := tgbotapi.NewUpdate(0)
 	updateConfig.Timeout = timeout
 
-	updates := botInstance.api.GetUpdatesChan(updateConfig)
+	updates := botInstance.Api.GetUpdatesChan(updateConfig)
 
 	ourChannel := make(chan Update)
 	go func(channel tgbotapi.UpdatesChannel) {
@@ -98,7 +98,7 @@ func (botInstance *Bot) _reply(chatID int64, replyTo int, text string, isMarkdow
 		msg.Text = FixMarkdown(escapeMarkdownV2(msg.Text))
 	}
 	msg.ReplyToMessageID = replyTo
-	_, err := botInstance.api.Send(msg)
+	_, err := botInstance.Api.Send(msg)
 	if err != nil {
 		log.Printf("Error sending message: %v", err)
 	}
@@ -110,7 +110,7 @@ func (botInstance *Bot) Message(message string, adminId int64, isMarkdown bool) 
 		msg.ParseMode = "MarkdownV2"
 		msg.Text = FixMarkdown(escapeMarkdownV2(msg.Text))
 	}
-	_, err := botInstance.api.Send(msg)
+	_, err := botInstance.Api.Send(msg)
 	if err != nil {
 		log.Printf("Error sending message: %v", err)
 	}
@@ -130,7 +130,7 @@ func (botInstance *Bot) SendImage(chatID int64, imageUrl string, caption string)
 
 	photoMsg := tgbotapi.NewPhoto(chatID, tgbotapi.FileBytes{Name: "image.png", Bytes: imageData})
 	photoMsg.Caption = caption
-	_, err = botInstance.api.Send(photoMsg)
+	_, err = botInstance.Api.Send(photoMsg)
 	if err != nil {
 		return err
 	}

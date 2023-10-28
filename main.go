@@ -12,7 +12,9 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	bot, err := botapi.NewBot("6971004569:AAFofeh_1raUkTZ0xOEdngqwVtuhcx3sL3w")
+	token := os.Getenv("UTPHRASE_TOKEN")
+
+	bot, err := botapi.NewBot(token)
 	if err != nil {
 		log.Panic(err)
 	}
