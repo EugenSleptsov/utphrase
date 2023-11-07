@@ -24,7 +24,10 @@ func main() {
 		log.Panic(err)
 	}
 
-	_ = bot.SetCommandList(botapi.CommandPhrase)
+	err = bot.SetCommandList(botapi.CommandPhrase)
+	if err != nil {
+		log.Print(err)
+	}
 
 	updates := bot.GetUpdateChannel(30)
 
