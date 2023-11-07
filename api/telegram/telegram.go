@@ -23,7 +23,7 @@ const (
 )
 
 var CommandDescriptions = map[Command]string{
-	CommandPhrase: "!фраза",
+	CommandPhrase: "!фраза, епт",
 }
 
 func NewBot(token string) (*Bot, error) {
