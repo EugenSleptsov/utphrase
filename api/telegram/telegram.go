@@ -19,13 +19,11 @@ type Update tgbotapi.Update
 type Command string
 
 const (
-	CommandPhrase  Command = "phrase"
-	CommandPhrase2 Command = "фраза"
+	CommandPhrase Command = "phrase"
 )
 
 var CommandDescriptions = map[Command]string{
-	CommandPhrase:  "!фраза",
-	CommandPhrase2: "!фраза",
+	CommandPhrase: "!фраза",
 }
 
 func NewBot(token string) (*Bot, error) {
