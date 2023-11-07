@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	botapi "github.com/EugenSleptsov/utphrase/api/telegram"
+	"github.com/joho/godotenv"
 	"log"
 	"math/rand"
 	"os"
@@ -12,12 +13,18 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+
 	token := os.Getenv("UTPHRASE_TOKEN")
 
 	bot, err := botapi.NewBot(token)
 	if err != nil {
 		log.Panic(err)
 	}
+
+	_ = bot.SetCommandList(botapi.CommandPhrase, botapi.CommandPhrase2)
 
 	updates := bot.GetUpdateChannel(30)
 
@@ -35,7 +42,7 @@ func main() {
 				}
 			} else {
 				switch update.Message.Text {
-				case "!фраза":
+				case "!фраза", "!фразочка", "!фраza", "!fraza", "!frazochka", "!frazo4ka", "/фраза":
 					commandPhrase(bot, update)
 				}
 			}
@@ -71,7 +78,7 @@ func commandAdd(bot *botapi.Bot, update botapi.Update) {
 	}
 
 	// Send a reply to confirm the phrase addition
-	replyText := "Phrase added: " + phrase
+	replyText := "Добавлена новая фраза: " + phrase
 	bot.Reply(update.Message.Chat.ID, update.Message.MessageID, replyText)
 }
 
