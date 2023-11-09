@@ -24,7 +24,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	err = bot.SetCommandList(botapi.CommandPhrase)
+	err = bot.SetCommandList(botapi.CommandPhrase, botapi.CommandSlap)
 	if err != nil {
 		log.Print(err)
 	}
@@ -42,6 +42,8 @@ func main() {
 					commandAdd(bot, update)
 				case "phrase", "fraza", "frazochka":
 					commandPhrase(bot, update)
+				case "slap":
+					commandSlap(bot, update)
 				}
 			} else {
 				switch update.Message.Text {
@@ -105,6 +107,19 @@ func commandPhrase(bot *botapi.Bot, update botapi.Update) {
 	bot.Reply(update.Message.Chat.ID, update.Message.MessageID, randPhrase)
 }
 
+// commandSlap слапает пользователя, если указан, иначе выбирает случайного
+func commandSlap(bot *botapi.Bot, update botapi.Update) {
+	user := update.Message.CommandArguments()
+	if len(user) == 0 {
+		// Select a random user or username from a slice
+		randomUsers := []string{"user1", "user2", "user3"} // Add your user list here
+		randomUser := getRandomUser(randomUsers)
+		user = randomUser
+	}
+
+	bot.Say(update.Message.Chat.ID, "Слапнул "+user, false)
+}
+
 // readPhrasesFromFile reads all phrases from a file and returns them as a slice
 func readPhrasesFromFile(filePath string) ([]string, error) {
 	_, err := os.Stat(filePath)
@@ -141,4 +156,15 @@ func createEmptyFileIfNotExists(filePath string) {
 		}
 		file.Close()
 	}
+}
+
+// getRandomUser returns a random user from the given list
+func getRandomUser(users []string) string {
+	if len(users) == 0 {
+		return ""
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	randomIndex := rand.Intn(len(users))
+	return users[randomIndex]
 }

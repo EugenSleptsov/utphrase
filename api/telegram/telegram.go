@@ -20,10 +20,12 @@ type Command string
 
 const (
 	CommandPhrase Command = "phrase"
+	CommandSlap   Command = "slap"
 )
 
 var CommandDescriptions = map[Command]string{
 	CommandPhrase: "!фраза, епт",
+	CommandSlap:   "me slaps you around a bit with a large trout",
 }
 
 func NewBot(token string) (*Bot, error) {
@@ -91,8 +93,8 @@ func (botInstance *Bot) _reply(chatID int64, replyTo int, text string, isMarkdow
 	}
 }
 
-func (botInstance *Bot) Message(message string, adminId int64, isMarkdown bool) {
-	msg := tgbotapi.NewMessage(adminId, message)
+func (botInstance *Bot) Say(chatID int64, text string, isMarkdown bool) {
+	msg := tgbotapi.NewMessage(chatID, text)
 	if isMarkdown {
 		msg.ParseMode = "MarkdownV2"
 		msg.Text = FixMarkdown(escapeMarkdownV2(msg.Text))
