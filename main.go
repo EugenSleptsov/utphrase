@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	botapi "github.com/EugenSleptsov/utphrase/api/telegram"
 	"github.com/joho/godotenv"
 	"log"
@@ -112,12 +113,23 @@ func commandSlap(bot *botapi.Bot, update botapi.Update) {
 	user := update.Message.CommandArguments()
 	if len(user) == 0 {
 		// Select a random user or username from a slice
-		randomUsers := []string{"user1", "user2", "user3"} // Add your user list here
+		randomUsers := []string{"@daishi424", "DenDr", "@OceanDrive80x", "Dutch", "lord-z", "Systez", "@magic_frontier"} // Add your user list here
 		randomUser := getRandomUser(randomUsers)
 		user = randomUser
 	}
 
-	bot.Say(update.Message.Chat.ID, "Слапнул "+user, false)
+	// @todo сделать в файле
+	formatList := []string{
+		"slaps %s around a bit with a large trout",
+		"slaps %s around a bit with a big smelly trout",
+		"%s couldn't handle the pressure and took their own life.",
+		"%s was slapped into another dimension.",
+	}
+
+	// getting random format
+	randFormat := formatList[rand.Intn(len(formatList))]
+
+	bot.Say(update.Message.Chat.ID, fmt.Sprintf(randFormat, user), false)
 }
 
 // readPhrasesFromFile reads all phrases from a file and returns them as a slice
